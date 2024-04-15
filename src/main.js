@@ -24,6 +24,8 @@ formEl.addEventListener('submit', onFormSubmit);
 function onFormSubmit(event) {
   event.preventDefault();
 
+  galleryEl.innerHTML = '';
+
   const inputValue = event.target.elements.js_input.value.trim();
 
   if (inputValue === '') {
@@ -35,6 +37,8 @@ function onFormSubmit(event) {
   fetchSearchData(inputValue)
     .then(response => {
       if (response.hits.length === 0) {
+        loaderEl.classList.remove('is-visible');
+
         iziToast.error({
           message:
             'Sorry, there are no images matching your search query. Please try again!',
@@ -45,14 +49,13 @@ function onFormSubmit(event) {
         return;
       }
 
+      loaderEl.classList.remove('is-visible');
+
       galleryEl.innerHTML = renderElements(response.hits);
 
       lightbox.refresh();
     })
     .catch(err => {
       console.log(err);
-    })
-    .finally(() => {
-      loaderEl.classList.remove('is-visible');
     });
 }
